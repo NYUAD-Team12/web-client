@@ -1,0 +1,7 @@
+data/*
+*.pyc
+Notes
+env
+src/models/LSTM/__pycache__/*
+src/utils/data/__pycache__/*
+src/utils/UI/__pycache__/*
