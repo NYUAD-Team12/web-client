@@ -1,7 +1,6 @@
 import streamlit as st
 from streamlit import config
 from src.home import Home as home
-from streamlit.script_runner import RerunException, StopException
 
 
 def write_page(page):  # pylint: disable=redefined-outer-name
