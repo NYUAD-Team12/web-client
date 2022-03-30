@@ -1,6 +1,7 @@
 import streamlit as st
 from streamlit import config
 from src.home import Home as home
+from src.about import About as about
 
 
 def write_page(page):  # pylint: disable=redefined-outer-name
@@ -9,6 +10,7 @@ def write_page(page):  # pylint: disable=redefined-outer-name
     return page.write()
 PAGES={ 
     'Home':home,
+    'About':about
 
     }
     # , 'CryptoCurrency':crypto}
