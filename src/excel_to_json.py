@@ -19,5 +19,5 @@ def excel_to_json(filename):
     with open(json_path, mode = 'w', encoding = 'utf-8') as f:
         f.write(json.dumps(data, ensure_ascii = False, indent = 4))
 
-filename = "filename"
+filename = "hr_sample_f.xlsx"
 excel_to_json(filename)
