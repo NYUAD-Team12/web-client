@@ -2,7 +2,7 @@ import streamlit as st
 import streamlit_authenticator as stauth
 import json
 import requests
-
+base_route = "https://resq-api.azurewebsites.net/api"
 def signup():
     st.title("Sign Up")
     with st.form("Sign Up"):
@@ -19,8 +19,10 @@ def signup():
         submitted = st.form_submit_button("Submit")
         if submitted:
             # send post request to the database
-            url = 'sample_url'
+            url = base_route + '/auth/signup'
             response = requests.post(url, json = new_user)
+            if response.status_code == 200:
+                st.success("Signup successful!")
 
 
 class User:
@@ -29,22 +31,28 @@ class User:
         if "load_state" not in st.session_state:
             st.session_state.load_state = False
 
-        # load existing user data
-        names = ['John Smith', 'Rebecca Briggs'] # temp data
-        emails = ['jsmith@gmail.com', 'rbriggs@gmail.com']
-        usernames = ['jsmith', 'rbriggs']
-        passwords = ['123', '456']
-        
         # if signup button is clicked, signup
         if st.button('Sign Up') or st.session_state.load_state:
             st.session_state.load_state = True
             signup()
         
         # login
-        hashed_passwords = stauth.Hasher(passwords).generate() # generate hashed password
-        authenticator = stauth.Authenticate(names, usernames, hashed_passwords, # create authenticator class using user credentials
-                    'some_cookie_name', 'some_signature_key', cookie_expiry_days=30)
-        name, authentication_status, username = authenticator.login('Login', 'main')
+        username = st.text_input("Username:")
+        password = st.text_input("Password:", type="password")
+        data ={
+                'username':username,
+                'password':password
+            }
+
+        if st.button("Login"):
+            url = base_route + '/auth/login'
+            res = requests.post(url, json = data)
+            if res.status_code == 200:
+                st.success("Login successful!")
+            else:
+                st.error("Login failed!")
+            st.write(res.json())
+
 
         if st.session_state['authentication_status']: # if already logged in
             authenticator.logout('Logout', 'main') # logout
