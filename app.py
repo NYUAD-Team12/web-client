@@ -8,11 +8,13 @@ def write_page(page):
     #    return page.dash_write(name='MSFT', start='2019-06-03', stop='2021-06-03')
     return page.write()
 
+def logout():
+    st.session_state.logged_in = False
 
 def main():
     PAGES = {}
     if "logged_in" not in st.session_state:
-        st.session_state.load_state = False
+        st.session_state.logged_in = False
         PAGES = { 
         'Home':home,
         'User':user,
@@ -23,8 +25,11 @@ def main():
         'User':user,
         }
     if st.session_state["logged_in"]:
-        PAGES = {'Home':home, 'Dashboard':job,} 
+        PAGES = {'Home':home, 'Dashboard':job,}
+        st.sidebar.button('Log Out', on_click = logout)
+
     choice=st.sidebar.radio("Click on the pages to explore",tuple(PAGES.keys()))
+
 
     if choice == None:
         write_page(home)

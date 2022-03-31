@@ -24,6 +24,8 @@ def signup():
             if response.status_code == 200:
                 st.success("Signup successful!")
 
+def login():
+    st.session_state.logged_in = True
 
 class User:
     @staticmethod
@@ -44,11 +46,10 @@ class User:
                 'password':password
             }
 
-        if st.button("Login"):
+        if st.button("Login", on_click = login):
             url = base_route + '/auth/login'
             res = requests.post(url, json = data)
             if res.status_code == 200:
-                st.session_state.logged_in = True
                 st.success("Login successful!")
             else:
                 st.error("Login failed!")
