@@ -48,6 +48,7 @@ class User:
             url = base_route + '/auth/login'
             res = requests.post(url, json = data)
             if res.status_code == 200:
+                st.session_state.logged_in = True
                 st.success("Login successful!")
             else:
                 st.error("Login failed!")
