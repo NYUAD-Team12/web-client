@@ -1,12 +1,8 @@
 import streamlit as st
 from streamlit import config
 from src.home import Home as home
-from src.user import User as user
 from src.job import Job as job
 
-
-def write_page(page):  # pylint: disable=redefined-outer-name
-    #if page == dash:
     #    return page.dash_write(name='MSFT', start='2019-06-03', stop='2021-06-03')
     return page.write()
 
