@@ -52,13 +52,3 @@ class User:
             else:
                 st.error("Login failed!")
             st.write(res.json())
-
-
-        if st.session_state['authentication_status']: # if already logged in
-            authenticator.logout('Logout', 'main') # logout
-            st.write('Welcome *%s*' % (st.session_state['name']))
-            st.title('Some content')
-        elif st.session_state['authentication_status'] == False: # if wrong authentication entered
-            st.error('Username/password is incorrect')
-        elif st.session_state['authentication_status'] == None: # if not logged in
-            st.warning('Please enter your username and password')
