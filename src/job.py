@@ -1,5 +1,7 @@
 import streamlit as st
 import pandas as pd
+import requests
+base_route = "https://resq-api.azurewebsites.net/api"
 
 def get_table():
     df = pd.DataFrame({
@@ -20,21 +22,47 @@ def display_jobs():
         )
 
 def add_job():
-    title = st.text_input("Job Title:")
-    description = st.text_area("Description:")
-    skill_list = ["Architecture Design", "Moving Resources", "CAD"] # get skill list
-    required_skills = st.multiselect("Skills", skill_list)
-    st.write(required_skills) # test
+    job_title = st.text_input("Job Title:")
+    job_description = st.text_area("Description:")
+    skill_list = requests.get(base_route+'/skill') # get skill list
+    col1_1, col1_2 = st.columns((8,1))
+    required_skills = []
+    with col1_1:
+        required_skills += st.multiselect("Skills", skill_list) # assign skills
+    with col1_2:
+        add_unique_skill = st.button("➕")
+
+    if add_unique_skill:
+        st.session_state.button = 1
+
+    col2_1, col2_2 = st.columns((8,1))
+    with col2_1:
+        if st.session_state.button != None:
+            with st.form("Add New Skill"):
+                unique_skill = st.text_input("Add a new skill manually")
+                submitted = st.form_submit_button("Submit")
+                if submitted:
+                    required_skills.append(unique_skill)
+
+    skill_priorities = [] # assign skill priorities
+    for skill in required_skills:
+        col3_1, col3_2 = st.columns((1,1))
+        with col3_1:
+            st.write(skill)
+        with col3_2:
+            skill_priorities.append(st.number_input("Skill Priority", min_value=0, max_value=10, step=1, key=skill))
     
+
 class Job:
     @staticmethod
     def write():
-        if "load_state" not in st.session_state:
-            st.session_state.load_state = False
+        if "button" not in st.session_state:
+            st.session_state.button = None
 
         st.title("Dashboard")
-        if st.button("+ Add Job") or st.session_state.load_state:
-            st.session_state.load_state = True
+        if st.button("+ Add Job"):
+            st.session_state.button = 0
+        if st.session_state.button != None:
             add_job()
         display_jobs()
         
