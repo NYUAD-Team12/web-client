@@ -24,6 +24,8 @@ def signup():
             if response.status_code == 200:
                 st.success("Signup successful!")
 
+def login():
+    st.session_state.logged_in = True
 
 class User:
     @staticmethod
@@ -44,7 +46,7 @@ class User:
                 'password':password
             }
 
-        if st.button("Login"):
+        if st.button("Login", on_click = login):
             url = base_route + '/auth/login'
             res = requests.post(url, json = data)
             if res.status_code == 200:
@@ -52,13 +54,3 @@ class User:
             else:
                 st.error("Login failed!")
             st.write(res.json())
-
-
-        if st.session_state['authentication_status']: # if already logged in
-            authenticator.logout('Logout', 'main') # logout
-            st.write('Welcome *%s*' % (st.session_state['name']))
-            st.title('Some content')
-        elif st.session_state['authentication_status'] == False: # if wrong authentication entered
-            st.error('Username/password is incorrect')
-        elif st.session_state['authentication_status'] == None: # if not logged in
-            st.warning('Please enter your username and password')
