@@ -1,6 +1,7 @@
 import streamlit as st
 from streamlit import config
 from src.home import Home as home
+from src.user import User as user
 from src.job import Job as job
 
 def write_page(page):
