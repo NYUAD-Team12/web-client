@@ -1,6 +1,4 @@
 import streamlit as st
-import io
-import pandas as pd
 
 class Home:
     @staticmethod
