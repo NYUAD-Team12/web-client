@@ -3,6 +3,7 @@ from streamlit import config
 from src.home import Home as home
 from src.job import Job as job
 
+def write_page(page):
     #    return page.dash_write(name='MSFT', start='2019-06-03', stop='2021-06-03')
     return page.write()
 
