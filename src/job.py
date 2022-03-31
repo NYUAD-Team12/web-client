@@ -1,7 +1,10 @@
 import streamlit as st
 import pandas as pd
 
+base_route = "https://resq-api.azurewebsites.net/api"
 def get_table():
+    url = base_route + '/projects'
+
     df = pd.DataFrame({
         'Job Title': ['Reconstruction of the building'],
         'Number of People Needed': [150],
