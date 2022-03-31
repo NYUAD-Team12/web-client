@@ -3,7 +3,6 @@ import pandas as pd
 import requests
 base_route = "https://resq-api.azurewebsites.net/api"
 
-base_route = "https://resq-api.azurewebsites.net/api"
 def get_table():
     url = base_route + '/projects'
 
@@ -27,25 +26,32 @@ def display_jobs():
 def add_job():
     job_title = st.text_input("Job Title:")
     job_description = st.text_area("Description:")
-    skill_list = requests.get(base_route+'/skill') # get skill list
+    skill_list = requests.get(base_route+'/skill').json()
+    skill_names = []
+    for i  in skill_list:
+        skill_names.append(i['skill_name'])
     col1_1, col1_2 = st.columns((8,1))
     required_skills = []
     with col1_1:
-        required_skills += st.multiselect("Skills", skill_list) # assign skills
+        required_skills += st.multiselect("Skills", skill_names) # assign skills
     with col1_2:
-        add_unique_skill = st.button("➕")
-
-    if add_unique_skill:
-        st.session_state.button = 1
+        add_skill = st.button("➕")
 
     col2_1, col2_2 = st.columns((8,1))
     with col2_1:
-        if st.session_state.button != None:
+        if add_skill:
             with st.form("Add New Skill"):
-                unique_skill = st.text_input("Add a new skill manually")
+                skill_name = st.text_input("Add a new skill manually")
+                skill_description = st.text_area("Description")
+
                 submitted = st.form_submit_button("Submit")
                 if submitted:
-                    required_skills.append(unique_skill)
+                    data = {
+                        'skill_name':skill_name,
+                        'skill_description':skill_description,
+                        'priority':1
+                    }
+                    rec = requests.post(base_route+'/skill', json = data)
 
     skill_priorities = [] # assign skill priorities
     for skill in required_skills:
