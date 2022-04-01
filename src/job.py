@@ -9,7 +9,8 @@ base_route = "http://127.0.0.1:5000/api"
 def optimize():
     # st.write("Optimized.")
     # return None
-    volunteer_allocation = requests.get(base_route + 'quantom/sim')
+    volunteer_allocation = requests.get(base_route + '/quantum/sim')
+    st.write(volunteer_allocation)
     return volunteer_allocation
     
 def display_jobs(volunteer_allocation = None):
@@ -17,7 +18,6 @@ def display_jobs(volunteer_allocation = None):
         'username':'demo',
     }
     job_list = requests.get(base_route+'/user/project', json = data).json()
-    st.write(job_list)
     if 'message' in job_list:
         st.header("No Current Tasks")
         st.write("Click add task to create a new task.")
