@@ -4,7 +4,7 @@ import json
 import pandas as pd
 import random
 import requests
-base_route = "https://resq-api.azurewebsites.net/api"
+base_route = "http://127.0.0.1:5000/api"
 TOKEN = None
 
 def signup(volunteer):
