@@ -4,16 +4,6 @@ import requests
 from src.user import TOKEN
 base_route = "https://resq-api.azurewebsites.net/api"
 
-def get_table():
-    url = base_route + '/projects'
-    df = pd.DataFrame({
-        'Job Title': ['Reconstruction of the building'],
-        'Number of People Needed': [150],
-        'Required Skills': [['Architectural Planning', 'Moving Resources']],
-        'Skill Level': [10]
-    })
-    return df
-
 def display_jobs():
     data = {
         'username':'admin',
@@ -26,7 +16,12 @@ def display_jobs():
             st.header(job['project_name'])
         with col2:
             st.write(job['project_description'])
-        st.write(job['skills'])
+        # display skill table
+        df = pd.DataFrame({
+            'Required Skills': job['skills'],
+            'Skill prioritiy': job['priority']
+        })
+        st.write(df)
 
 def add_job():
     job_name = st.text_input("Job Title:")
@@ -52,12 +47,12 @@ def add_job():
                 skill_description = st.text_area("Description")
                 data = {
                     'skill_name':skill_name,
-                    'skill_description':skill_description,
-                    'priority':1
+                    'skill_description':skill_description
                 }
                 submitted = st.form_submit_button("Submit")
                 if submitted:  
                     rec = requests.post(base_route+'/skill', json = data)
+                    st.session_state.button = 0
                     if rec.status_code == 200:
                         st.success("Skill added successfully!")
                     else:
@@ -78,14 +73,13 @@ def add_job():
             'project_name':job_name,
             'project_description':job_description,
             'skills':required_skills,
-            # 'skill_
+            'priority':skill_priorities
         }
         rec = requests.post(base_route+'/project', json = data)
         if rec.status_code == 200:
             st.success("Job added successfully!")
         else:
             st.error("Job failed to add!")
-    
 
 class Job:
     @staticmethod
@@ -100,6 +94,3 @@ class Job:
             add_job()
 
         display_jobs()
-        
-        df = get_table()
-        st.write(df) # will display the dataframe
