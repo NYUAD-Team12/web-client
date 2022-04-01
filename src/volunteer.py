@@ -4,7 +4,7 @@ import json
 import pandas as pd
 import random
 import requests
-base_route = "http://127.0.0.1:5000/api"
+base_route = "https://resq-api.azurewebsites.net/api"
 TOKEN = None
 
 def signup(volunteer):
@@ -59,7 +59,7 @@ class Volunteer:
                     st.write("\n")
                 st.write(skill)
             with col3_2:
-                skill_rating[skill] = st.number_input("Rate your skill (1-10):", min_value=0, max_value=10, step=1, key=skill)
+                skill_rating[skill] = st.number_input("Rate your skill (1-10):", min_value=0, max_value=5, step=1, key=skill)
         volunteer = {"name": full_name, "email": email, "skills": skill_rating, "username": full_name+str(random.randint(0,10))}
         for i in range(4):
             st.text("\n")

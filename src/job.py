@@ -3,12 +3,10 @@ import pandas as pd
 import requests
 from src.user import TOKEN
 import plotly.express as px
-base_route = "http://127.0.0.1:5000/api"
+base_route = "https://resq-api.azurewebsites.net/api"
 
 
 def optimize():
-    # st.write("Optimized.")
-    # return None
     volunteer_allocation = requests.get(base_route + '/quantum/sim')
     st.write(volunteer_allocation)
     return volunteer_allocation
@@ -22,18 +20,28 @@ def display_jobs(volunteer_allocation = None):
         st.header("No Current Tasks")
         st.write("Click add task to create a new task.")
     else:
-        volunteer_allocation = None
-        st.write(volunteer_allocation)
-        # if volunteer_allocation != None:
-        #     optimized = True
-        # if optimized:
-        #     st.subheader("Volunteers Distribution")
-        #     df = pd.DataFrame({
-        #         'Locations':job['project_name'],
-        #         'Num. of Volunteers Allocated':volunteer_allocation[job['project_name']]
-        #     })
-        #     fig = px.line(df, x = "Skills Needed", y = "Avg. of User Skills")
-        #     st.plotly_chart(fig)
+        volunteer_allocation = {
+            "Yemen":{
+            0:"Maria8"
+            },
+            "Lebanon":{
+            0:"Bob3"
+            },
+            "Ukraine":{
+            0:"Anna1",
+            1:"Ahmed0"
+            }
+            }
+        if volunteer_allocation != None:
+            optimized = True
+        if optimized:
+            st.subheader("Volunteers Distribution")
+            df = pd.DataFrame({
+                'Locations':volunteer_allocation.keys(),
+                'Num. of Volunteers Allocated':len(volunteer_allocation.values())
+            })
+            fig = px.line(df, x = "Locations", y = "Num. of Volunteers Allocated")
+            st.plotly_chart(fig)
 
         for job in job_list:
             st.header(job['project_name'])
@@ -95,7 +103,7 @@ def add_job():
         with col3_1:
             st.write(skill)
         with col3_2:
-            skill_priorities.append(st.number_input("Skill Priority", min_value=0, max_value=10, step=1, key=skill))
+            skill_priorities.append(st.number_input("Skill Priority", min_value=0, max_value=5, step=1, key=skill))
     
     skill_dict = {}
     for i in range(len(required_skills)):
@@ -129,6 +137,7 @@ class Job:
             if st.button("Optimize"):
                 st.session_state.button = 2
         
+        volunteer_allocation = None
         if st.session_state.button == 2:
             volunteer_allocation = optimize()
         if st.session_state.button == 0:

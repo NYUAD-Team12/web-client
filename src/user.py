@@ -2,7 +2,7 @@ import streamlit as st
 import streamlit_authenticator as stauth
 import json
 import requests
-base_route = "http://127.0.0.1:5000/api"
+base_route = "https://resq-api.azurewebsites.net/api"
 TOKEN = None
 def signup():
     st.title("Sign Up")
