@@ -133,4 +133,4 @@ class Job:
             volunteer_allocation = optimize()
         if st.session_state.button == 0:
             add_job()
-        display_jobs()
+        display_jobs(volunteer_allocation)
