@@ -6,7 +6,6 @@ base_route = "https://resq-api.azurewebsites.net/api"
 
 def get_table():
     url = base_route + '/projects'
-
     df = pd.DataFrame({
         'Job Title': ['Reconstruction of the building'],
         'Number of People Needed': [150],
@@ -16,16 +15,20 @@ def get_table():
     return df
 
 def display_jobs():
-    col1, col2 = st.columns((2, 3))
-    with col1:
-        st.header("#1 Building Reconstruction")
-    with col2:
-        st.write(
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur elementum nulla ornare nisi elementum, at sodales arcu fringilla. Maecenas sed efficitur risus. Vestibulum imperdiet orci vestibulum nisl dictum, sit amet mattis odio sodales. Fusce ipsum lacus, consequat at gravida at, maximus elementum tellus. Quisque cursus mauris sed lectus volutpat fringilla. Nulla feugiat tristique neque et pharetra. Proin in odio vel elit sodales venenatis. Ut dignissim tellus eu varius tempus."
-        )
+    data = {
+        'username':'admin',
+    }
+    job_list = requests.get(base_route+'/user/project', json = data).json()
+
+    for job in job_list:
+        col1, col2 = st.columns((2, 3))
+        with col1:
+            st.header(job['project_name'])
+        with col2:
+            st.write(job['project_description'])
+        st.write(job['skills'])
 
 def add_job():
-    # with st.form("Add New Job"):
     job_name = st.text_input("Job Title:")
     job_description = st.text_area("Description:")
     skill_list = requests.get(base_route+'/skill').json()
@@ -42,40 +45,42 @@ def add_job():
     col2_1, col2_2 = st.columns((8,1))
     with col2_1:
         if add_skill:
+            st.session_state.button = 1
+        if st.session_state.button == 1:
             with st.form("Add New Skill"):
                 skill_name = st.text_input("Add a new skill manually")
                 skill_description = st.text_area("Description")
-
+                data = {
+                    'skill_name':skill_name,
+                    'skill_description':skill_description,
+                    'priority':1
+                }
                 submitted = st.form_submit_button("Submit")
-                if submitted:
-                    # auth = {
-                    #     'Authorization': 'Bearer ' + st.session_state.token
-                    # }
-                    data = {
-                        'skill_name':skill_name,
-                        'skill_description':skill_description,
-                        'priority':1
-                    }
+                if submitted:  
                     rec = requests.post(base_route+'/skill', json = data)
+                    if rec.status_code == 200:
+                        st.success("Skill added successfully!")
+                    else:
+                        st.error("Skill failed to add!")
 
-    # skill_priorities = [] # assign skill priorities
-    # for skill in required_skills:
-    #     col3_1, col3_2 = st.columns((1,1))
-    #     with col3_1:
-    #         st.write(skill)
-    #     with col3_2:
-    #         skill_priorities.append(st.number_input("Skill Priority", min_value=0, max_value=10, step=1, key=skill))
+    skill_priorities = [] # assign skill priorities
+    for skill in required_skills:
+        col3_1, col3_2 = st.columns((1,1))
+        with col3_1:
+            st.write(skill)
+        with col3_2:
+            skill_priorities.append(st.number_input("Skill Priority", min_value=0, max_value=10, step=1, key=skill))
     
     if st.button("Submit"):
         st.write(st.session_state.token)
         data = {
             'username' : "admin",
-            'job_name':job_name,
             'project_name':job_name,
             'project_description':job_description,
-            'skills':required_skills
+            'skills':required_skills,
+            # 'skill_
         }
-        rec = requests.post(base_route+'/projects', json = data)
+        rec = requests.post(base_route+'/project', json = data)
         if rec.status_code == 200:
             st.success("Job added successfully!")
         else:
