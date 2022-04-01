@@ -7,21 +7,13 @@ base_route = "https://resq-api.azurewebsites.net/api"
 TOKEN = None
 
 def signup(volunteer):
-    st.title("Sign Up as Volunteer")
-    with st.form("Sign Up"):
-        new_user = {
-            'name':name,
-            'email':email,
-            'skills':username,
-        }
-        submitted = st.form_submit_button("Submit")
-        if submitted:
-            # send post request to the database
-            url = base_route + '/auth/signup'
-            response = requests.post(url, json = new_user)
-            if response.status_code == 200:
-                data = response.json()["token"]
-                st.success("Signup successful!")
+    url = base_route + '/vol'
+    response = requests.post(url, json = volunteer)
+    if response.status_code == 200:
+        data = response.json()["token"]
+        st.success("Signup successful!")
+    else:
+        st.error("Something did not work")
 
 
 class Volunteer:
@@ -60,15 +52,15 @@ class Volunteer:
         for skill in selected_skills:
             col3_1, col3_2 = st.columns((1,1))
             with col3_1:
+                for i in range(3):
+                    st.write("\n")
+
                 st.write(skill)
             with col3_2:
-                skill_rating[skill] = st.number_input("Skill Priority", min_value=0, max_value=10, step=1, key=skill)
-        for skill in selected_skills:
-            st.header('Skill Name')
-            st.write('Rating')
-            # display skill table
-            df = pd.DataFrame({
-                'Skill ': skill,
-                'Rating': skill_rating[skill]
-            })
-            st.write(df)
+                skill_rating[skill] = st.number_input("Rate your skill (1-10):", min_value=0, max_value=10, step=1, key=skill)
+        volunteer = {"name": full_name, "email": email, "skills": skill_rating}
+
+        for i in range(4):
+            st.text("\n")
+
+        st.button("Sign Up as a Volunteer", on_click=signup, args=(volunteer, ))
