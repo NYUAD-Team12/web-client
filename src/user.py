@@ -23,7 +23,6 @@ def signup():
             url = base_route + '/auth/signup'
             response = requests.post(url, json = new_user)
             if response.status_code == 200:
-                data = response.json()["token"]
                 st.success("Signup successful!")
 
 def login(data):
@@ -54,10 +53,9 @@ class User:
         # login
         username = st.text_input("Username:")
         password = st.text_input("Password:", type="password")
-        data ={
-                'username':username,
-                'password':password
-            }
+        data = {
+            'username':username,
+            'password':password
+        }
 
         st.button("Login", on_click = login, args=(data, ))
-            # st.write(res.json())

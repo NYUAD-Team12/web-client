@@ -91,5 +91,4 @@ class Job:
             st.session_state.button = 0
         if st.session_state.button != None:
             add_job()
-
         display_jobs()
