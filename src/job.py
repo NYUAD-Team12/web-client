@@ -11,11 +11,8 @@ def display_jobs():
     job_list = requests.get(base_route+'/user/project', json = data).json()
 
     for job in job_list:
-        col1, col2 = st.columns((2, 3))
-        with col1:
-            st.header(job['project_name'])
-        with col2:
-            st.write(job['project_description'])
+        st.header(job['project_name'])
+        st.write(job['project_description'])
         # display skill table
         df = pd.DataFrame({
             'Required Skills': job['skills'],
@@ -35,6 +32,8 @@ def add_job():
     with col1_1:
         required_skills += st.multiselect("Skills", skill_names) # assign skills
     with col1_2:
+        st.text('') # vertically align
+        st.text('')
         add_skill = st.button("➕")
 
     col2_1, col2_2 = st.columns((8,1))
