@@ -1,6 +1,7 @@
 import streamlit as st
 import streamlit_authenticator as stauth
 import json
+import pandas as pd
 import requests
 base_route = "https://resq-api.azurewebsites.net/api"
 TOKEN = None
@@ -34,9 +35,9 @@ class Volunteer:
         for i in skill_list:
             skill_names.append(i['skill_name'])
         col1_1, col1_2 = st.columns((8,1))
-        required_skills = []
+        selected_skills = []
         with col1_1:
-            required_skills += st.multiselect("What are you skilled in?", skill_names) # assign skills
+            selected_skills += st.multiselect("What are you skilled in?", skill_names) # assign skills
         with col1_2:
             add_skill = st.button("➕")
 
@@ -49,13 +50,25 @@ class Volunteer:
 
                     submitted = st.form_submit_button("Submit")
                     if submitted:
-                        # auth = {
-                        #     'Authorization': 'Bearer ' + st.session_state.token
-                        # }
                         data = {
                             'skill_name':skill_name,
                             'skill_description':skill_description,
                             'priority':1
                         }
                         rec = requests.post(base_route+'/skill', json = data)
-        skill_rating = st.text_input("Rate your skill:")
+        skill_rating = {} # assign skill rating
+        for skill in selected_skills:
+            col3_1, col3_2 = st.columns((1,1))
+            with col3_1:
+                st.write(skill)
+            with col3_2:
+                skill_rating[skill] = st.number_input("Skill Priority", min_value=0, max_value=10, step=1, key=skill)
+        for skill in selected_skills:
+            st.header('Skill Name')
+            st.write('Rating')
+            # display skill table
+            df = pd.DataFrame({
+                'Skill ': skill,
+                'Rating': skill_rating[skill]
+            })
+            st.write(df)
