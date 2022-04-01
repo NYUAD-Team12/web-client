@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import requests
+from src.user import TOKEN
 base_route = "https://resq-api.azurewebsites.net/api"
 
 def get_table():
@@ -47,6 +48,9 @@ def add_job():
 
                 submitted = st.form_submit_button("Submit")
                 if submitted:
+                    # auth = {
+                    #     'Authorization': 'Bearer ' + st.session_state.token
+                    # }
                     data = {
                         'skill_name':skill_name,
                         'skill_description':skill_description,
@@ -63,16 +67,20 @@ def add_job():
     #         skill_priorities.append(st.number_input("Skill Priority", min_value=0, max_value=10, step=1, key=skill))
     
     if st.button("Submit"):
-    auth = {
-        'Bearer Token:'
-    }
-    data = {
-        'project_name':job_name,
-        'project_description':job_description,
-        'project_reward':1,
-        'skills':skill_names
-    }
-    rec = requests.post(base_route+'/project', json = data)
+        st.write(st.session_state.token)
+        data = {
+            'username' : "admin",
+            'job_name':job_name,
+            'project_name':job_name,
+            'project_description':job_description,
+            'skills':required_skills
+        }
+        rec = requests.post(base_route+'/projects', json = data)
+        if rec.status_code == 200:
+            st.success("Job added successfully!")
+        else:
+            st.error("Job failed to add!")
+    
 
 class Job:
     @staticmethod

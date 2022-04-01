@@ -3,7 +3,7 @@ import streamlit_authenticator as stauth
 import json
 import requests
 base_route = "https://resq-api.azurewebsites.net/api"
-
+TOKEN = None
 def signup():
     st.title("Sign Up")
     with st.form("Sign Up"):
@@ -26,7 +26,8 @@ def signup():
                 data = response.json()["token"]
                 st.success("Signup successful!")
 
-def login():
+def login(token):
+    st.session_state.token = token
     st.session_state.logged_in = True
 
 class User:
@@ -53,8 +54,7 @@ class User:
             url = base_route + '/auth/login'
             res = requests.post(url, json = data)
             if res.status_code == 200:
-                st.session_state.token = res.json()
-                login()
+                login(res.json()["token"])
 
                 st.success("Login successful!")
             else:
