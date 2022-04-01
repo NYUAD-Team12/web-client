@@ -2,18 +2,20 @@ import streamlit as st
 import streamlit_authenticator as stauth
 import json
 import pandas as pd
+import random
 import requests
 base_route = "https://resq-api.azurewebsites.net/api"
 TOKEN = None
 
 def signup(volunteer):
     url = base_route + '/vol'
-    response = requests.post(url, json = volunteer)
+    response = requests.post(url, json = json.dumps(volunteer))
     if response.status_code == 200:
-        data = response.json()["token"]
+        st.write(response.text)
         st.success("Signup successful!")
     else:
-        st.error("Something did not work")
+        st.write(response.text)
+        st.error("There was an error in connection.")
 
 
 class Volunteer:
@@ -44,10 +46,10 @@ class Volunteer:
                     if submitted:
                         data = {
                             'skill_name':skill_name,
-                            'skill_description':skill_description,
-                            'priority':1
+                            'skill_description':skill_description
                         }
                         rec = requests.post(base_route+'/skill', json = data)
+                        selected_skills.append(skill_name)
         skill_rating = {} # assign skill rating
         for skill in selected_skills:
             col3_1, col3_2 = st.columns((1,1))
@@ -58,8 +60,8 @@ class Volunteer:
                 st.write(skill)
             with col3_2:
                 skill_rating[skill] = st.number_input("Rate your skill (1-10):", min_value=0, max_value=10, step=1, key=skill)
-        volunteer = {"name": full_name, "email": email, "skills": skill_rating}
-
+        volunteer = {"name": full_name, "email": email, "skills": skill_rating, "username": full_name+str(random.randint(0,10))}
+        st.write(volunteer)
         for i in range(4):
             st.text("\n")
 
