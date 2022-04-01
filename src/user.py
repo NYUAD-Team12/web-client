@@ -26,9 +26,18 @@ def signup():
                 data = response.json()["token"]
                 st.success("Signup successful!")
 
-def login(token):
-    st.session_state.token = token
-    st.session_state.logged_in = True
+def login(data):
+    url = base_route + '/auth/login'
+    res = requests.post(url, json = data)
+    if res.status_code == 200:
+        st.session_state.logged_in = True
+        st.success("Login successful!")
+        if "token" not in st.session_state:
+            st.session_state["token"] = res.json()["token"]
+        else:
+            st.session_state.token = res.json()["token"]
+    else:
+        st.error("Login failed!")
 
 class User:
     @staticmethod
@@ -50,14 +59,5 @@ class User:
                 'password':password
             }
 
-        if st.button("Login"):
-            url = base_route + '/auth/login'
-            res = requests.post(url, json = data)
-            if res.status_code == 200:
-                login(res.json()["token"])
-
-                st.success("Login successful!")
-            else:
-                st.error("Login failed!")
-
+        st.button("Login", on_click = login, args=(data, ))
             # st.write(res.json())
