@@ -19,14 +19,14 @@ def main():
         st.session_state.logged_in = False
         PAGES = { 
         'Home':home,
-        'User':user,
-        'Volunteer Signup': volunteer,
+        'NGO':user,
+        'Volunteer': volunteer,
         }
     if not st.session_state["logged_in"]:
         PAGES = { 
         'Home':home,
-        'User':user,
-        'Volunteer Signup': volunteer,
+        'NGO':user,
+        'Volunteer': volunteer,
         }
     if st.session_state["logged_in"]:
         PAGES = {'Home':home, 'Dashboard':job,}
