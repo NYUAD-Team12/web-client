@@ -4,29 +4,38 @@ import requests
 from src.user import TOKEN
 base_route = "https://resq-api.azurewebsites.net/api"
 
+
+def optimize():
+    st.write("Optimized!")
+    
 def display_jobs():
     data = {
         'username':'admin',
     }
     job_list = requests.get(base_route+'/user/project', json = data).json()
-
-    for job in job_list:
-        st.header(job['project_name'])
-        st.write(job['project_description'])
-        # display skill table
-        df = pd.DataFrame({
-            'Required Skills': job['skills'],
-            'Skill prioritiy': job['priority']
-        })
-        st.write(df)
+    st.write(job_list)
+    if 'message' in job_list:
+        st.header("No Current Tasks")
+        st.write("Click add job to create a new task.")
+    else:
+        for job in job_list:
+            st.header(job['project_name'])
+            st.write(job['project_description'])
+            # display skill table
+            df = pd.DataFrame({
+                'Required Skills': job['skills'],
+                'Skill prioritiy': job['priority']
+            })
+            st.write(df)
 
 def add_job():
-    job_name = st.text_input("Job Title:")
-    job_description = st.text_area("Description:")
+    job_name = st.text_input("Location:")
+    job_description = st.text_area("Task Description:")
     skill_list = requests.get(base_route+'/skill').json()
     skill_names = []
-    for i in skill_list:
-        skill_names.append(i['skill_name'])
+    if 'message' not in skill_list:
+        for i in skill_list:
+            skill_names.append(i['skill_name'])
     col1_1, col1_2 = st.columns((8,1))
     required_skills = []
     with col1_1:
@@ -76,9 +85,9 @@ def add_job():
         }
         rec = requests.post(base_route+'/project', json = data)
         if rec.status_code == 200:
-            st.success("Job added successfully!")
+            st.success("Task added successfully!")
         else:
-            st.error("Job failed to add!")
+            st.error("Task failed to add!")
 
 class Job:
     @staticmethod
@@ -87,8 +96,16 @@ class Job:
             st.session_state.button = None
 
         st.title("Dashboard")
-        if st.button("+ Add Job"):
-            st.session_state.button = 0
-        if st.session_state.button != None:
+        col1, col2 = st.columns((1, 1))
+        with col1:
+            if st.button("+ Add Task"):
+                st.session_state.button = 0
+        with col2:
+            if st.button("Optimize"):
+                st.session_state.button = 2
+        
+        if st.session_state.button == 2:
+            allocate_volunteers()
+        if st.session_state.button == 0:
             add_job()
         display_jobs()
