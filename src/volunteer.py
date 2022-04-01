@@ -9,7 +9,7 @@ TOKEN = None
 
 def signup(volunteer):
     url = base_route + '/vol'
-    response = requests.post(url, json = json.dumps(volunteer))
+    response = requests.post(url, json = volunteer)
     if response.status_code == 200:
         st.write(response.text)
         st.success("Signup successful!")
