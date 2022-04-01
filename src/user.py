@@ -23,6 +23,7 @@ def signup():
             url = base_route + '/auth/signup'
             response = requests.post(url, json = new_user)
             if response.status_code == 200:
+                data = response.json()["token"]
                 st.success("Signup successful!")
 
 def login():
@@ -31,6 +32,7 @@ def login():
 class User:
     @staticmethod
     def write():
+        
         if "load_state" not in st.session_state:
             st.session_state.load_state = False
 
@@ -47,11 +49,15 @@ class User:
                 'password':password
             }
 
-        if st.button("Login", on_click = login):
+        if st.button("Login"):
             url = base_route + '/auth/login'
             res = requests.post(url, json = data)
             if res.status_code == 200:
+                st.session_state.token = res.json()
+                login()
+
                 st.success("Login successful!")
             else:
                 st.error("Login failed!")
-            st.write(res.json())
+
+            # st.write(res.json())

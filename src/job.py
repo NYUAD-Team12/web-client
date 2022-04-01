@@ -24,11 +24,12 @@ def display_jobs():
         )
 
 def add_job():
-    job_title = st.text_input("Job Title:")
+    # with st.form("Add New Job"):
+    job_name = st.text_input("Job Title:")
     job_description = st.text_area("Description:")
     skill_list = requests.get(base_route+'/skill').json()
     skill_names = []
-    for i  in skill_list:
+    for i in skill_list:
         skill_names.append(i['skill_name'])
     col1_1, col1_2 = st.columns((8,1))
     required_skills = []
@@ -53,14 +54,25 @@ def add_job():
                     }
                     rec = requests.post(base_route+'/skill', json = data)
 
-    skill_priorities = [] # assign skill priorities
-    for skill in required_skills:
-        col3_1, col3_2 = st.columns((1,1))
-        with col3_1:
-            st.write(skill)
-        with col3_2:
-            skill_priorities.append(st.number_input("Skill Priority", min_value=0, max_value=10, step=1, key=skill))
+    # skill_priorities = [] # assign skill priorities
+    # for skill in required_skills:
+    #     col3_1, col3_2 = st.columns((1,1))
+    #     with col3_1:
+    #         st.write(skill)
+    #     with col3_2:
+    #         skill_priorities.append(st.number_input("Skill Priority", min_value=0, max_value=10, step=1, key=skill))
     
+    if st.button("Submit"):
+    auth = {
+        'Bearer Token:'
+    }
+    data = {
+        'project_name':job_name,
+        'project_description':job_description,
+        'project_reward':1,
+        'skills':skill_names
+    }
+    rec = requests.post(base_route+'/project', json = data)
 
 class Job:
     @staticmethod
@@ -73,6 +85,7 @@ class Job:
             st.session_state.button = 0
         if st.session_state.button != None:
             add_job()
+
         display_jobs()
         
         df = get_table()

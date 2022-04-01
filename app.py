@@ -13,6 +13,7 @@ def logout():
 
 def main():
     PAGES = {}
+    st.session_state.token = None
     if "logged_in" not in st.session_state:
         st.session_state.logged_in = False
         PAGES = { 
