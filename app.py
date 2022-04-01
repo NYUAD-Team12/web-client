@@ -3,6 +3,7 @@ from streamlit import config
 from src.home import Home as home
 from src.user import User as user
 from src.job import Job as job
+from src.volunteer import Volunteer as volunteer
 
 def write_page(page):
     #    return page.dash_write(name='MSFT', start='2019-06-03', stop='2021-06-03')
@@ -19,11 +20,13 @@ def main():
         PAGES = { 
         'Home':home,
         'User':user,
+        'Volunteer Signup': volunteer,
         }
     if not st.session_state["logged_in"]:
         PAGES = { 
         'Home':home,
         'User':user,
+        'Volunteer Signup': volunteer,
         }
     if st.session_state["logged_in"]:
         PAGES = {'Home':home, 'Dashboard':job,}
